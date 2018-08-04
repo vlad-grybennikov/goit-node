@@ -1,0 +1,13 @@
+{
+  "name": "goit-node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon --inspect --ignore test/ index.js",
+    "test": "mocha",
+    "production": "node index.js"
+  },
+  "author": "Vlad Trostinsky",
+  "license": "ISC"
+}
