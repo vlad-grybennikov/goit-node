@@ -1,0 +1,42 @@
+[
+  {
+    "username": "vlad111",
+    "password": "123",
+    "books": [
+      {
+        "title": "JS is suck!",
+        "author": "PHP developer"
+      }
+    ]
+  },
+  {
+    "username": "sergey111",
+    "password": "123",
+    "books": [
+      {
+        "title": "JS is suck!",
+        "author": "PHP developer"
+      }
+    ]
+  },
+  {
+    "username": "oleg111",
+    "password": "123",
+    "books": [
+      {
+        "title": "JS is suck!",
+        "author": "PHP developer"
+      }
+    ]
+  },
+  {
+    "username": "anatolii111",
+    "password": "123",
+    "books": [
+      {
+        "title": "JS is suck!",
+        "author": "PHP developer"
+      }
+    ]
+  }
+]

@@ -1,64 +1,82 @@
-const fs = require("fs");
-const EventEmitter = require('events');
+// const app = require("express")();
+const express = require("express");
+const app = express();
+const config = require("./config/development");
+const bodyParser = require('body-parser');
 
-const emitter = new EventEmitter();
-emitter.on("log", () => {
-    setImmediate(() => {
-        emitter.emit("log");
+app.use(bodyParser.json()); // for parsing application/json
+app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+
+app.use((req, res, next) => {
+    console.log(`${req.url} --> ${req.method} --> ${Date.now()}`);
+    next();
+})
+
+// endpoint = url + method
+
+const USERS = require("./mock-data/users");
+
+// Controller
+const getUsers = (req, res, next) => {
+    req.users = USERS;
+    next();
+};
+
+// Controller
+const sendUsers = (req, res, next) => {
+    res.status(200);
+    res.json(req.users);
+};
+
+const addUser = (req, res, next) => {
+    const user = req.body;
+    USERS.push(user);
+    req.users = USERS;
+    next();
+}
+
+const getBooks = (req, res, next) => {
+    const index = req.params.index;
+    req.books = USERS[index].books;
+    next();
+};
+const sendBooks = (req, res, next) => {
+    res.status(200);
+    res.json(req.books);
+}
+
+// Users
+app.get("/users/", getUsers, sendUsers);
+app.post("/users/", addUser, sendUsers);
+app.delete("/users/:index/");
+app.put("/users/:index/"); // (Lodash) _.merge
+
+// Books
+app.get("/users/:index/books", getBooks, sendBooks);
+app.post("/users/:index/books");
+app.put("/users/:index/books/:title");
+app.delete("/users/:index/books/:title");
+// *
+app.get("/users/:index/books/:title");
+
+// app.post("/users/")
+// app.put("/users/")
+// app.delete("/users/")
+// app.all("/users/")
+
+// Not Found Error
+app.use((req, res, next) => {
+    const error = new Error("Not Found!");
+    next(error);
+})
+
+// All errors
+app.use((err, req, res, next) => {
+    res.status(500);
+    res.json({
+        error: err.message,
+        stack: err.stack
     })
 })
-emitter.emit("log");
 
-const openFileSync = (path) => {
-    // const file = fs.statSync("./trash/info.txt");
-    const file = fs.readFileSync(path);
-    const text = file.toString();
-    console.log(text.split("")
-        .filter((letter) => {
-            return letter.toUpperCase() === "T";
-        })
-        .length
-
-    );
-}
-
-const openFile = async (path) => {
-    const file = await fs.promises.readFile(path);
-    const text = file.toString();
-    console.log(text.split("")
-        .filter((letter) => {
-            return letter.toUpperCase() === "T";
-        })
-        .length
-    );
-}
-
-// openFileSync("./trash/info.txt");
-openFile("./trash/info.txt");
-
-
-// Node Core
-// RESTful API, Express, HTTP
-// MongoDB, NoSQL, SQL, Sequelize
-// Security - Json Web Token, Authentification
-// Practice, sending Emails
-// API, websockets
-// Deploy, nginx, pm2, DBs
-
-// mongolab
-const Postgres = (sql) => "response"; // native driver for node
-const request = (table, limits = 1000) => Postgres(`SELECT * from ${table} LIMIT ${limits}`);
-
-function ServerError(status, message){
-    const error = new Error(message);
-    error.status = status;
-    return error;
-}
-const {pid, kill} = process;
-setTimeout(() => {
-    kill(pid);
-}, 10000);
-
-request("orders", 50);
-console.log("Test 52");
-module.exports = 52;
+app.listen(config.port);
