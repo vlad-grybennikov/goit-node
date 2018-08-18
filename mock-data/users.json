@@ -12,6 +12,10 @@
   {
     "username": "sergey111",
     "password": "123",
+    "test": {
+      "color": "blue",
+      "place": 5
+    },
     "books": [
       {
         "title": "JS is suck!",

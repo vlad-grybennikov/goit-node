@@ -1,39 +1,48 @@
-// app.js
-// models/
-// controllers/
-// routes/   (POST /users/) -> users.add, users.createActivation, users.checkEmail
-// helpers/   -> currency.convert, language.russian, data.analize
-// seeders/ -> test data
-// utils/ -> object.copyDeep, object.isEqual, date.format("DD-MM-YYYY");
-// config/
-// index.js
-// development.json
-// production.json
-// test.json
-// test/
+const express = require("express");
+const app = express();
+const config = require("./config/development");
+const bodyParser = require('body-parser');
+const usersRoute = require("./routes/users");
+const booksRoute = require("./books");
 
-const http = require("http");
-const querystring = require("querystring");
-// 1) Делать запросы на другие серверы (http.request);
-// 2) Обработка входящих запросов(http.createServer, .listen);
+const {checkTechnologies} = require("./controllers/technologies");
 
-const server = http.createServer({},
-    (request /* Запрос */, response /* Ответ */) => {
-        // /users/ --- POST, body = { a: 1 }
-        // response.statusCode = 201;
-        const name = querystring.parse(request.url.slice(2)).name;
+app.use(bodyParser.json()); // for parsing application/json
+app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
-        request.query = querystring.parse(request.url.slice(2));
+app.use((req, res, next) => {
+    console.log(`${req.url} --> ${req.method} --> ${Date.now()}`);
+    next();
+})
 
-        if(request.url === '/users/' && request.method === "GET"){}
-        response.end(`Hello, ${name}`);
-        // debugger;
-    });
-server.listen(8080);
+// Users
+app.use("/users/", usersRoute);
+app.use("/users/:index/books/", booksRoute);
 
-// http://google.com -> 192.168.1.105
-// 192.168.1.105:8080, http://google.com:8080
-// http://google.com === http://google.com:80
+const TECH = {
+    html: false,
+    css: false,
+    javascript: false
+}
+app.get("/technologies/", checkTechnologies);
+// app.post("/users/")
+// app.put("/users/")
+// app.delete("/users/")
+// app.all("/users/")
 
+// Not Found Error
+app.use((req, res, next) => {
+    const error = new Error("Not Found!");
+    next(error);
+})
 
-// Не будет работать до тех пор
+// All errors
+app.use((err, req, res, next) => {
+    res.status(500);
+    res.json({
+        error: err.message,
+        stack: err.stack
+    })
+})
+
+app.listen(config.port);

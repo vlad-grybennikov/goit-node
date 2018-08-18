@@ -9,4 +9,7 @@ https://www.getpostman.com/
 https://github.com/jsdom/jsdom
 
 # Lesson 3
-...
+http://expressjs.com/ru/4x/api.html#router
+https://www.npmjs.com/package/slug
+https://github.com/trostinsky/express-example
+https://www.npmjs.com/package/winston
