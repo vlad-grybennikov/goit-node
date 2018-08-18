@@ -3,7 +3,6 @@ const app = express();
 const config = require("./config/development");
 const bodyParser = require('body-parser');
 const usersRoute = require("./routes/users");
-const booksRoute = require("./books");
 
 const {checkTechnologies} = require("./controllers/technologies");
 
@@ -17,8 +16,6 @@ app.use((req, res, next) => {
 
 // Users
 app.use("/users/", usersRoute);
-app.use("/users/:index/books/", booksRoute);
-
 const TECH = {
     html: false,
     css: false,
