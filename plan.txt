@@ -1,8 +1,8 @@
-1) Разбор домашнего задания;
+1) Разбор домашнего задания; +
 2) Оптимизация структуры нашего приложения(Routes,
-Middlewares, Controllers, Config);
-3) Логгирование
-4) Express.static – возвращаем статичные файлы (html, картинки и прочее);
+Middlewares, Controllers, Config); +
+3) Логгирование +
+4) Express.static – возвращаем статичные файлы (html, картинки и прочее); +
 5) TDD, Что такое тесты?
 
 Домашнее задание:
@@ -18,4 +18,24 @@ Middlewares, Controllers, Config);
 2) Сделать HTML страницу, которую можно получить при запросе на url /documentation/ .
 На этой HTML странице, будут описаны все методы доступные(можете заморочиться и сделать табличку) в этом API и краткое описание работы этих методов.
 Основная задача второй части – научиться отдавать статичные файлы.
+
+
+db.collections.users = [{
+    name: "Test",
+    password: "test",
+    _id: "1edeadagfea2421eada"
+}];
+
+
+collections/
+    users/
+        1edeadagfea2421eada.json
+        1edeadagfea2421eada.json
+        1edeadagfea2421eada.json
+        1edeadagfea2421eada.json
+    books/
+        1edeadagfea2421eada.json
+        1edeadagfea2421eada.json
+
+
 

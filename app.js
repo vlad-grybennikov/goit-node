@@ -1,31 +1,47 @@
 const express = require("express");
 const app = express();
-const config = require("./config/development");
+const config = require("./config");
 const bodyParser = require('body-parser');
 const usersRoute = require("./routes/users");
+const winston = require("winston");
+
+// Подключаемся к базе данных
+require("./utils/connect");
+
+const productionLogger = winston.createLogger({
+    level: 'info',
+    format: winston.format.json(),
+    transports: [
+        new winston.transports.File({ filename: 'all.log' })
+    ]
+});
+
+const developmentLogger = winston.createLogger({
+    level: 'info',
+    format: winston.format.simple(),
+    transports: [
+        new winston.transports.Console()
+    ]
+});
 
 const {checkTechnologies} = require("./controllers/technologies");
 
 app.use(bodyParser.json()); // for parsing application/json
-app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({extended: true})); // for parsing application/x-www-form-urlencoded
 
 app.use((req, res, next) => {
-    console.log(`${req.url} --> ${req.method} --> ${Date.now()}`);
+    if(process.env.NODE_ENV === 'production'){
+        productionLogger.log("info", `${req.url} --- ${req.method}`);
+    } else {
+        developmentLogger.log("info", `${req.url} --- ${req.method}`);
+    }
     next();
 })
 
 // Users
 app.use("/users/", usersRoute);
-const TECH = {
-    html: false,
-    css: false,
-    javascript: false
-}
-app.get("/technologies/", checkTechnologies);
-// app.post("/users/")
-// app.put("/users/")
-// app.delete("/users/")
-// app.all("/users/")
+
+app.use(express.static("public"));
 
 // Not Found Error
 app.use((req, res, next) => {
@@ -42,4 +58,6 @@ app.use((err, req, res, next) => {
     })
 })
 
-app.listen(config.port);
+app.listen(config.port, () => {
+    console.log(`SERVER IS STARTED ON: ${config.port}`);
+});
